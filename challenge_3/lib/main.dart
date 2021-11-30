@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'func.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  List<bool> listbool = Aux.listBool();
+  List<String> liststring = Aux.listString();
+  MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -18,12 +20,32 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Check Box's          Resetar todos os itens"),
+          backgroundColor: Colors.black,
+          title: const Text("Check Box's"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  ListView.builder(
+                    itemCount: widget.liststring.length,
+                    itemBuilder: (context, item) => Construct(
+                        state: widget.listbool[item],
+                        name: widget.liststring[item]),
+                  );
+                });
+              },
+              child: const Text(
+                "Resetar todos os itens",
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ),
+          ],
         ),
         body: SafeArea(
           child: ListView.builder(
-            itemCount: 1000,
-            itemBuilder: (context, item) => const Construct(),
+            itemCount: widget.listbool.length,
+            itemBuilder: (context, item) => Construct(
+                state: widget.listbool[item], name: widget.liststring[item]),
           ),
         ),
       ),
@@ -32,34 +54,49 @@ class _MyAppState extends State<MyApp> {
 }
 
 class Construct extends StatefulWidget {
-  const Construct({Key? key}) : super(key: key);
+  bool state;
+  String name;
+  Construct({Key? key, required this.state, required this.name})
+      : super(key: key);
 
   @override
   _ConstructState createState() => _ConstructState();
 }
 
 class _ConstructState extends State<Construct> {
-  bool state = Mark.generateRandomEnabledState();
-  String name = Mark.generateRandomString(11);
   @override
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 30),
-        color: state ? const Color(0xFFE1BEE7) : Colors.white,
+        color: widget.state ? const Color(0xFFB2EBF2) : Colors.white,
         child: Row(
           children: [
             Text(
-              name,
+              widget.name,
               style: const TextStyle(fontSize: 20, color: Colors.black),
             ),
             Checkbox(
-                value: state,
+                value: widget.state,
                 onChanged: (value) {
                   setState(() {
-                    state = !state;
+                    widget.state = !widget.state;
                   });
                 })
           ],
         ));
+  }
+}
+
+class Reset extends StatefulWidget {
+  const Reset({Key? key}) : super(key: key);
+
+  @override
+  _ResetState createState() => _ResetState();
+}
+
+class _ResetState extends State<Reset> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
